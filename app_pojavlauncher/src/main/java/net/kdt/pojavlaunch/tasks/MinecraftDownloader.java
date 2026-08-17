@@ -61,7 +61,6 @@ public class MinecraftDownloader {
 
     private static final ThreadLocal<byte[]> sThreadLocalDownloadBuffer = new ThreadLocal<>();
 
-    private boolean isLocalProfile = false;
     private boolean isOnline;
 
     /**
@@ -75,18 +74,11 @@ public class MinecraftDownloader {
                       @NonNull String realVersion,
                       @NonNull AsyncMinecraftDownloader.DoneListener listener) {
         if(activity != null){
-            isLocalProfile = Tools.isLocalProfile(activity);
             isOnline = Tools.isOnline(activity);
-            Tools.switchDemo(Tools.isDemoProfile(activity));
-
-        } else {
-            isLocalProfile = true;
-            Tools.switchDemo(true);
         }
-
         sExecutorService.execute(() -> {
             try {
-                if(isLocalProfile || !isOnline) {
+                if(!isOnline) {
                     String versionMessage = realVersion; // Use provided version unless we find its a modded instance
 
                     // See if provided version is a modded version and if that version depends on another jar, check for presence of both jar's .json.
